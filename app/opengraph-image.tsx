@@ -5,6 +5,11 @@ export const dynamic = "force-static";
 export const alt = "Robotics & Embodied AI — In motion";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+// Static hosts infer MIME type from the URL extension. A named variant keeps
+// the generated image shareable on GitHub Pages as well as Next.js servers.
+export function generateImageMetadata() {
+  return [{ id: "share.png", alt, size, contentType }];
+}
 export default function OpenGraphImage() {
   return new ImageResponse(
     (
