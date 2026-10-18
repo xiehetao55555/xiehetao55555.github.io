@@ -1,0 +1,66 @@
+name: Publish portfolio to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Require a root personal site
+        env:
+          REPOSITORY: ${{ github.event.repository.name }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          if [ "${REPOSITORY,,}" != "${OWNER,,}.github.io" ]; then
+            echo 'Use an <owner>.github.io repository so root-relative media and navigation work.' >&2
+            exit 1
+          fi
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check source and content
+        run: |
+          npm run lint
+          npm run typecheck
+          npm run check:content
+      - name: Build static site for its actual URL
+        run: npm run build:static
+        env:
+          PORTFOLIO_SITE_URL: ${{ steps.pages.outputs.base_url }}
+          NEXT_TELEMETRY_DISABLED: "1"
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publication.outputs.page_url }}
+    steps:
+      - name: Publish
+        id: publication
+        uses: actions/deploy-pages@v5

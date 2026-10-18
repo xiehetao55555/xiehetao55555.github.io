@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { profile } from "@/content/profile";
-import { externalHref } from "@/lib/links";
-import { isDraft } from "@/lib/site";
+import { isDraft, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,7 +14,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   display: "swap",
 });
-const siteUrl = externalHref(profile.siteUrl);
 
 export const metadata: Metadata = {
   // Local origin is an explicit draft-only fallback, never a claimed public URL.

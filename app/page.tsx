@@ -8,9 +8,9 @@ import Footer from "@/components/portfolio/Footer";
 import { profile } from "@/content/profile";
 import { socials } from "@/content/socials";
 import { externalHref } from "@/lib/links";
+import { siteUrl } from "@/lib/site";
 
 export default function Home() {
-  const siteUrl = externalHref(profile.siteUrl);
   const person =
     !profile.isPlaceholder && siteUrl
       ? {

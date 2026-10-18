@@ -142,6 +142,16 @@ npm run build:static
 
 预分配站点地址：[Robotics, in motion.](https://robotics-in-motion-7f42.wiry-song-2934.chatgpt.site)。仅在托管服务报告部署成功后才代表已经上线。
 
+### GitHub Pages：免费 github.io 地址
+
+GitHub Pages 的自动发布配置已放在 `.github/workflows/deploy-pages.yml`。目标为你的个人主页仓库 `<GitHub用户名>.github.io`，对应地址 `https://<GitHub用户名>.github.io/`。这只是地址格式；在完成账号授权、实际创建仓库并发布成功前，不代表新地址已存在。
+
+使用 GitHub Free 时，Pages 仓库需要设为公开。授权后可创建或检查该个人主页仓库，将代码推送到 `main`，并在仓库的 Settings → Pages 中将发布来源设为 GitHub Actions。若同名仓库已经有内容，应先检查已有站点，不能直接覆盖。
+
+工作流会执行 `npm ci`、lint、类型检查、内容检查与 `npm run build:static`，上传 `out/` 并部署。无需填写个人访问令牌或添加自建密钥。仓库内的 `.nojekyll` 会随静态资源输出；Pages 的实际 `base_url` 通过 `PORTFOLIO_SITE_URL` 注入构建，自动用于 canonical、Open Graph、robots、sitemap 和结构化数据，避免新站引用旧托管地址。
+
+目前工作流按个人根站点设计，明确检查仓库名为 `<owner>.github.io`；普通 `/<repository>/` 项目站需要额外适配资源路径。个人资料仍为草稿时可通过链接浏览，但暂不开放搜索索引。
+
 ### Vercel / Next.js 托管平台
 
 将源码推送至你自己的 GitHub 仓库，在平台导入。安装 `npm ci`，构建 `npm run build`，选择 Node.js 22 或 24 和 Next.js 预设。当前仅配置追踪来源的 `upstream`，没有替你创建或推送仓库。不需要密钥、数据库或额外环境变量；不要把 `.next` 当静态站目录上传。
