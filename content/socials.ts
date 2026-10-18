@@ -7,5 +7,11 @@ import type { Socials } from "./types";
 export const socials: Socials = {
   email: "wansuizi@163.com",
   resume: "",
-  links: [],
+  links: [
+    {
+      label: "GitHub",
+      href: "https://github.com/xiehetao55555-jpg",
+      icon: "github",
+    },
+  ],
 };

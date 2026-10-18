@@ -114,7 +114,7 @@ R3F 场景为独立客户端组件，通过 `next/dynamic({ ssr: false })` 懒�
 
 ## 上线与索引
 
-本地结构检查允许草稿构建。当前已配置 Sites 的 HTTPS 地址，公开姓名尚待补充，`profile.isPlaceholder=true`、`seo.allowIndexing=false`：页面为 `noindex`，robots 禁止抓取、sitemap 为空。这只影响搜索引擎收录，不阻止访客通过公开链接浏览。
+本地结构检查允许草稿构建。当前主要托管目标为 GitHub Pages，公开姓名尚待补充，`profile.isPlaceholder=true`、`seo.allowIndexing=false`：页面为 `noindex`，robots 禁止抓取、sitemap 为空。这只影响搜索引擎收录，不阻止访客通过公开链接浏览。
 
 正式上线前：
 
@@ -140,13 +140,13 @@ npm run build:static
 
 生成的 `out/` 包含完整 HTML、JavaScript、CSS、字体、分享图和本地素材。技术泡泡、筛选、详情和 3D 均在浏览器运行，不需要常驻本地电脑或 Node 服务。`.openai/hosting.json` 绑定当前 Sites 项目及静态目录；通过 Sites 工作流推送源码、打包并部署后生效。默认 `npm run build` 仍生成 standalone，用于 Vercel / Docker 等原有方式。
 
-预分配站点地址：[Robotics, in motion.](https://robotics-in-motion-7f42.wiry-song-2934.chatgpt.site)。仅在托管服务报告部署成功后才代表已经上线。
+此前发布的 [Sites 备用站点](https://robotics-in-motion-7f42.wiry-song-2934.chatgpt.site) 保留。GitHub Pages 与 Sites 独立发布，推送 GitHub 不会自动更新备用站点。
 
 ### GitHub Pages：免费 github.io 地址
 
-GitHub Pages 的自动发布配置已放在 `.github/workflows/deploy-pages.yml`。目标为你的个人主页仓库 `<GitHub用户名>.github.io`，对应地址 `https://<GitHub用户名>.github.io/`。这只是地址格式；在完成账号授权、实际创建仓库并发布成功前，不代表新地址已存在。
+GitHub Pages 的自动发布配置位于 `.github/workflows/deploy-pages.yml`。个人主页仓库为 [xiehetao55555-jpg.github.io](https://github.com/xiehetao55555-jpg/xiehetao55555-jpg.github.io)，对应地址为 [https://xiehetao55555-jpg.github.io/](https://xiehetao55555-jpg.github.io/)。以仓库 [Actions](https://github.com/xiehetao55555-jpg/xiehetao55555-jpg.github.io/actions/workflows/deploy-pages.yml) 的实际部署成功记录为准。
 
-使用 GitHub Free 时，Pages 仓库需要设为公开。授权后可创建或检查该个人主页仓库，将代码推送到 `main`，并在仓库的 Settings → Pages 中将发布来源设为 GitHub Actions。若同名仓库已经有内容，应先检查已有站点，不能直接覆盖。
+该仓库已设为公开，Settings → Pages 的发布来源已配置为 GitHub Actions，并启用 HTTPS。后续修改内容文件后推送 `main` 即自动发布，也可以在 Actions 页面手动运行。无需将本地电脑保持开机。如果迁移到其他账号，应使用 `<GitHub用户名>.github.io` 仓库；同名仓库已有网站时先检查并保留既有内容。
 
 工作流会执行 `npm ci`、lint、类型检查、内容检查与 `npm run build:static`，上传 `out/` 并部署。无需填写个人访问令牌或添加自建密钥。仓库内的 `.nojekyll` 会随静态资源输出；Pages 的实际 `base_url` 通过 `PORTFOLIO_SITE_URL` 注入构建，自动用于 canonical、Open Graph、robots、sitemap 和结构化数据，避免新站引用旧托管地址。
 
@@ -154,7 +154,7 @@ GitHub Pages 的自动发布配置已放在 `.github/workflows/deploy-pages.yml`
 
 ### Vercel / Next.js 托管平台
 
-将源码推送至你自己的 GitHub 仓库，在平台导入。安装 `npm ci`，构建 `npm run build`，选择 Node.js 22 或 24 和 Next.js 预设。当前仅配置追踪来源的 `upstream`，没有替你创建或推送仓库。不需要密钥、数据库或额外环境变量；不要把 `.next` 当静态站目录上传。
+如需迁移，在平台导入当前 GitHub 仓库。安装 `npm ci`，构建 `npm run build`，选择 Node.js 22 或 24 和 Next.js 预设。`origin` 指向个人主页仓库，`upstream` 保留开源基础来源。不需要密钥、数据库或额外环境变量；不要把 `.next` 当静态站目录上传。
 
 ### Docker / 自托管
 
@@ -167,6 +167,6 @@ Docker 复制 standalone、静态文件和 `public`，以非 root 用户监听 3
 
 ## 仍可补充的内容
 
-仍待补充：**公开姓名 / 昵称**；确认资料后可开放搜索索引。已有 Sites 域名可使用，也可另行绑定自有域名。可选：希望公开的单位、GitHub、真实项目照片 / 视频 / 截图、Demo、简历 PDF、研究成果的正式链接。没有提供的内容继续隐藏，不展示虚假按钮。
+仍待补充：**公开姓名 / 昵称**；确认资料后可开放搜索索引。GitHub Pages 已有免费 `github.io` 地址，也可另行绑定自有域名。可选：希望公开的单位、真实项目照片 / 视频 / 截图、项目源码、Demo、简历 PDF、研究成果的正式链接。没有提供的内容继续隐藏，不展示虚假按钮。
 
 代码沿用 MIT；`public/art/` 与程序几何体为本次原创，保留上游许可证及来源说明即可。Geist 字体通过 Next.js 官方字体集成加载；仓库保留的旧组件资源默认首页不使用。

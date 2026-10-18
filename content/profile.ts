@@ -1,7 +1,7 @@
 import type { Profile } from "./types";
 
 // Content is selected from the owner's supplied experience, not inferred.
-// TODO: Add a public name/nickname and the final site URL before indexing.
+// TODO: Add a public name/nickname before indexing.
 // isPlaceholder remains true solely because the name has not been supplied.
 export const profile: Profile = {
   isPlaceholder: true,
@@ -64,7 +64,7 @@ export const profile: Profile = {
   ],
   location: "",
   availability: "",
-  siteUrl: "https://robotics-in-motion-7f42.wiry-song-2934.chatgpt.site",
+  siteUrl: "https://xiehetao55555-jpg.github.io/",
   seo: {
     title: "机器人与具身智能 | 技术作品集",
     description:
