@@ -1,11 +1,12 @@
 "use client";
 
 import {
-  createElement,
   useEffect,
   useRef,
   type CSSProperties,
+  type ComponentType,
   type ElementType,
+  type Ref,
   type ReactNode,
 } from "react";
 
@@ -43,6 +44,14 @@ export default function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      el.getBoundingClientRect().top < window.innerHeight
+    ) {
+      el.classList.add("reveal-in");
+      return;
+    }
+    el.classList.add("reveal-ready");
     if (typeof IntersectionObserver === "undefined") {
       el.classList.add("reveal-in");
       return;
@@ -59,7 +68,7 @@ export default function Reveal({
           }
         }
       },
-      { threshold, rootMargin: "0px 0px -8% 0px" }
+      { threshold, rootMargin: "0px 0px -8% 0px" },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -80,13 +89,15 @@ export default function Reveal({
     ["--reveal-from" as string]: axis[direction],
   };
 
-  return createElement(
-    Tag,
-    {
-      ref,
-      className: `reveal ${className}`.trim(),
-      style,
-    },
-    children
+  const Element = Tag as ComponentType<{
+    children?: ReactNode;
+    className: string;
+    style: CSSProperties;
+    ref: Ref<HTMLElement>;
+  }>;
+  return (
+    <Element ref={ref} className={`reveal ${className}`.trim()} style={style}>
+      {children}
+    </Element>
   );
 }

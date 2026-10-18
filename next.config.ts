@@ -25,20 +25,24 @@ const securityHeaders = [
   },
 ];
 
+const staticExport = process.env.PORTFOLIO_STATIC_EXPORT === "1";
 const nextConfig: NextConfig = {
   // Emits a minimal server bundle at `.next/standalone/` so the Docker
   // runtime image can drop npm/node_modules entirely and just run
   // `node server.js`. Trims the final image to ~100 MB.
-  output: "standalone",
+  output: staticExport ? "export" : "standalone",
+  ...(staticExport ? { images: { unoptimized: true } } : {}),
 
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: securityHeaders,
-      },
-    ];
-  },
+  ...(!staticExport && {
+    async headers() {
+      return [
+        {
+          source: "/:path*",
+          headers: securityHeaders,
+        },
+      ];
+    },
+  }),
 };
 
 export default nextConfig;

@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useLanguage } from "@/components/LanguageProvider";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   email: string;
@@ -14,13 +13,15 @@ type Props = {
 // the user still gets somewhere useful.
 export default function CopyEmail({ email, className, children }: Props) {
   const [show, setShow] = useState(false);
-  const { t } = useLanguage();
+  const timer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
 
   const handleClick = async () => {
     try {
       await navigator.clipboard.writeText(email);
       setShow(true);
-      window.setTimeout(() => setShow(false), 1800);
+      window.clearTimeout(timer.current);
+      timer.current = window.setTimeout(() => setShow(false), 1800);
     } catch {
       window.location.href = `mailto:${email}`;
     }
@@ -33,12 +34,18 @@ export default function CopyEmail({ email, className, children }: Props) {
         onClick={handleClick}
         data-cursor="hover"
         className={className}
-        aria-label={`${t("contact.copyEmail")} ${email}`}
+        aria-label={`复制邮箱地址 ${email}`}
       >
         {children}
       </button>
-      <div className="toast" data-show={show} role="status" aria-live="polite">
-        {t("contact.emailToast")} · {email}
+      <div
+        className="toast"
+        data-show={show}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {show ? `邮箱已复制 · ${email}` : ""}
       </div>
     </>
   );

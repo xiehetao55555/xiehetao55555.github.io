@@ -98,8 +98,8 @@ export const DICT = {
     linkedin: { es: "LinkedIn", en: "LinkedIn" },
     emailToast: { es: "Email copiado", en: "Email copied" },
     footer: {
-      es: "© 2026 Txema Albero. Todos los derechos reservados.",
-      en: "© 2026 Txema Albero. All rights reserved.",
+      es: "TODO · Tu nombre. Todos los derechos reservados.",
+      en: "TODO · Your name. All rights reserved.",
     },
   },
   keyboard: {

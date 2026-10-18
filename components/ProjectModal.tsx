@@ -1,216 +1,136 @@
 "use client";
-
-import { useEffect, useRef } from "react";
-import { useLenis } from "lenis/react";
-import { useLanguage } from "@/components/LanguageProvider";
+import { useEffect, useRef, type KeyboardEvent } from "react";
+import type { Project } from "@/content/types";
+import { externalHref } from "@/lib/links";
 import Carousel from "@/components/Carousel";
-import type { Lang } from "@/lib/i18n";
+import { Icon } from "@/components/portfolio/Icons";
 
-type Localised = { es: string; en: string };
-
-export type ProjectDetail = {
-  num: string;
-  name: Localised;
-  // Main technologies — shown both on the card and in the modal. We kept a
-  // single canonical list so chips don't balloon inside the dialog.
-  stack: string[];
-  desc: Localised; // short card copy
-  details: Localised; // longer modal copy
-  url?: string;
-  github?: string;
-  badge?: Localised;
-  // simple-icons slugs from the 3D keyboard to light up + animate when
-  // this project's section is active.
-  highlights?: string[];
-  // Optional screenshot/preview URLs for the carousel. When missing the
-  // modal falls back to stylised placeholder slides.
-  media?: string[];
-};
-
-type Props = {
-  project: ProjectDetail | null;
-  onClose: () => void;
-};
-
-function pick<T>(loc: { es: T; en: T }, lang: Lang): T {
-  return loc[lang];
+function keepFocusInDialog(event: KeyboardEvent<HTMLDialogElement>) {
+  if (event.key !== "Tab") return;
+  const controls = Array.from(
+    event.currentTarget.querySelectorAll<HTMLElement>(
+      "button:not([disabled]), a[href], [tabindex='0']",
+    ),
+  ).filter((element) => element.getClientRects().length > 0);
+  const first = controls[0];
+  const last = controls[controls.length - 1];
+  if (!first || !last) return;
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
 }
 
-// Fullscreen modal that details a project. Closes on ESC, click outside,
-// and via the explicit close button. Stops Lenis while open (overflow:hidden
-// alone isn't enough — Lenis listens to wheel events) and restores it on
-// close.
-export default function ProjectModal({ project, onClose }: Props) {
-  const { t, lang } = useLanguage();
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const open = project !== null;
-  const lenis = useLenis();
-
-  // ESC to close.
+// Native dialog preserves upstream's details + carousel and adds focus trapping.
+export default function ProjectModal({
+  project,
+  onClose,
+}: {
+  project: Project;
+  onClose: () => void;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
-
-  // Freeze the page while the modal is open: stop Lenis so wheel/touch
-  // events don't leak through, plus overflow:hidden on html/body as a
-  // belt-and-braces fallback.
-  useEffect(() => {
-    if (!open) return;
-    lenis?.stop();
-    const prevHtml = document.documentElement.style.overflow;
-    const prevBody = document.body.style.overflow;
+    const dialog = ref.current;
+    dialog?.showModal();
+    const previous = document.documentElement.style.overflow;
     document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
     return () => {
-      lenis?.start();
-      document.documentElement.style.overflow = prevHtml;
-      document.body.style.overflow = prevBody;
+      document.documentElement.style.overflow = previous;
+      dialog?.close();
     };
-  }, [open, lenis]);
-
-  // Move focus into the modal when it opens so ESC captures and keyboard
-  // users don't have to tab through the whole page first.
-  useEffect(() => {
-    if (open && dialogRef.current) {
-      dialogRef.current.focus();
-    }
-  }, [open]);
-
+  }, []);
+  const screenshots = project.screenshots?.length
+    ? project.screenshots
+    : [project.cover];
   return (
-    <div
-      className={`project-modal ${open ? "project-modal--open" : ""}`}
-      aria-hidden={!open}
-      onClick={(e) => {
-        // Click on the backdrop (not inside the dialog) closes.
-        if (e.target === e.currentTarget) onClose();
+    <dialog
+      ref={ref}
+      className="project-dialog"
+      aria-labelledby="project-dialog-title"
+      onKeyDown={keepFocusInDialog}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div
-        ref={dialogRef}
-        className="project-modal__dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="project-modal-title"
-        tabIndex={-1}
-        data-lenis-prevent
-      >
-        {project && (
-          <>
-            <button
-              type="button"
-              onClick={onClose}
-              data-cursor="hover"
-              className="project-modal__close"
-              aria-label={t("projects.close")}
-            >
-              <svg
-                viewBox="0 0 24 24"
-                width="18"
-                height="18"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                aria-hidden
-              >
-                <path d="M6 6l12 12M18 6l-12 12" />
-              </svg>
-            </button>
-
-            <div className="project-modal__media">
-              <Carousel media={project.media} projectNum={project.num} />
+      <div className="project-dialog-inner">
+        <button
+          type="button"
+          onClick={onClose}
+          className="dialog-close"
+          aria-label="关闭项目详情"
+          autoFocus
+        >
+          <Icon name="close" />
+        </button>
+        <Carousel
+          media={screenshots.map((item) => item.src)}
+          altTexts={screenshots.map((item) => item.alt)}
+          projectNum={project.category}
+        />
+        <div className="dialog-body">
+          <p className="eyebrow">
+            {project.category}
+            {project.isPlaceholder && " / TODO PLACEHOLDER"}
+          </p>
+          <h2 id="project-dialog-title">{project.name}</h2>
+          <p className="dialog-description">{project.description}</p>
+          <div className="dialog-facts">
+            <div>
+              <h3>MY ROLE</h3>
+              <p>{project.role}</p>
             </div>
-
-            <div className="project-modal__body">
-              <p className="font-mono text-xs text-ice-400 uppercase tracking-[0.25em] mb-2">
-                {project.num} · {t("projects.kicker")}
+            <div>
+              <h3>TECH STACK</h3>
+              <p>
+                {project.stack.length
+                  ? project.stack.join(" / ")
+                  : "TODO · 添加真实技术栈"}
               </p>
-              <h3
-                id="project-modal-title"
-                className="text-3xl sm:text-4xl font-bold tracking-tight text-ice-50 mb-3"
-              >
-                {pick(project.name, lang)}
-              </h3>
-              {project.badge && (
-                <span className="inline-block text-[10px] uppercase tracking-widest text-ice-300 border border-ice-700 rounded-full px-2 py-0.5 mb-4">
-                  {pick(project.badge, lang)}
-                </span>
-              )}
-              <p className="text-ice-200 leading-relaxed mb-6 whitespace-pre-line">
-                {pick(project.details, lang)}
-              </p>
-
-              {(project.url || project.github) && (
-                <div className="flex flex-wrap gap-3 mb-6">
-                  {project.url && (
-                    <a
-                      href={project.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-cursor="hover"
-                      data-magnetic
-                      className="frost-btn frost-btn--primary"
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        width="16"
-                        height="16"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        aria-hidden
-                      >
-                        <path d="M7 17L17 7M8 7h9v9" />
-                      </svg>
-                      {t("projects.openSite")}
-                    </a>
-                  )}
-                  {project.github && (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-cursor="hover"
-                      data-magnetic
-                      className="frost-btn"
-                    >
-                      <svg
-                        viewBox="0 0 16 16"
-                        width="14"
-                        height="14"
-                        fill="currentColor"
-                        aria-hidden
-                      >
-                        <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-                      </svg>
-                      {t("projects.viewCode")}
-                    </a>
-                  )}
-                </div>
-              )}
-
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.25em] text-ice-400 mb-2">
-                  {t("projects.stackLabel")}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {project.stack.map((s) => (
-                    <span key={s} className="frost-chip">
-                      {s}
-                    </span>
-                  ))}
-                </div>
-              </div>
             </div>
-          </>
-        )}
+          </div>
+          <h3>THE STORY</h3>
+          <p>{project.details}</p>
+          <h3>HIGHLIGHTS</h3>
+          <ul>
+            {project.highlights.map((highlight) => (
+              <li key={highlight}>{highlight}</li>
+            ))}
+          </ul>
+          <div className="dialog-links">
+            {externalHref(project.github) && (
+              <a
+                className="button button-secondary"
+                href={externalHref(project.github)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icon name="github" />
+                GitHub<span className="sr-only">（在新标签页打开）</span>
+              </a>
+            )}
+            {externalHref(project.demo) && (
+              <a
+                className="button button-primary"
+                href={externalHref(project.demo)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Live Demo
+                <Icon name="external" />
+                <span className="sr-only">（在新标签页打开）</span>
+              </a>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+    </dialog>
   );
 }
