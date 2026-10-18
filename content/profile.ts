@@ -64,7 +64,7 @@ export const profile: Profile = {
   ],
   location: "",
   availability: "",
-  siteUrl: "https://xiehetao55555-jpg.github.io/",
+  siteUrl: "https://xiehetao55555.github.io/",
   seo: {
     title: "机器人与具身智能 | 技术作品集",
     description:

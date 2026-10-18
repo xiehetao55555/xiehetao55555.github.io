@@ -10,7 +10,7 @@ export const socials: Socials = {
   links: [
     {
       label: "GitHub",
-      href: "https://github.com/xiehetao55555-jpg",
+      href: "https://github.com/xiehetao55555",
       icon: "github",
     },
   ],

@@ -144,7 +144,7 @@ npm run build:static
 
 ### GitHub Pages：免费 github.io 地址
 
-GitHub Pages 的自动发布配置位于 `.github/workflows/deploy-pages.yml`。个人主页仓库为 [xiehetao55555-jpg.github.io](https://github.com/xiehetao55555-jpg/xiehetao55555-jpg.github.io)，对应地址为 [https://xiehetao55555-jpg.github.io/](https://xiehetao55555-jpg.github.io/)。以仓库 [Actions](https://github.com/xiehetao55555-jpg/xiehetao55555-jpg.github.io/actions/workflows/deploy-pages.yml) 的实际部署成功记录为准。
+GitHub Pages 的自动发布配置位于 `.github/workflows/deploy-pages.yml`。个人主页仓库为 [xiehetao55555.github.io](https://github.com/xiehetao55555/xiehetao55555.github.io)，对应地址为 [https://xiehetao55555.github.io/](https://xiehetao55555.github.io/)。以仓库 [Actions](https://github.com/xiehetao55555/xiehetao55555.github.io/actions/workflows/deploy-pages.yml) 的实际部署成功记录为准。
 
 该仓库已设为公开，Settings → Pages 的发布来源已配置为 GitHub Actions，并启用 HTTPS。后续修改内容文件后推送 `main` 即自动发布，也可以在 Actions 页面手动运行。无需将本地电脑保持开机。如果迁移到其他账号，应使用 `<GitHub用户名>.github.io` 仓库；同名仓库已有网站时先检查并保留既有内容。
 
