@@ -22,8 +22,7 @@ export type ProjectDetail = {
   // simple-icons slugs from the 3D keyboard to light up + animate when
   // this project's section is active.
   highlights?: string[];
-  // Optional screenshot/preview URLs for the carousel. When missing the
-  // modal falls back to stylised placeholder slides.
+  // Optional screenshot/preview URLs. No media means no gallery.
   media?: string[];
 };
 

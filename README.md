@@ -2,7 +2,7 @@
 
 基于 GitHub MIT 开源项目渐进改造的 Next.js 作品集。首页是星际星云中的技术泡泡星图：15 个技术关键词缓慢浮动，点击即可滚动到第二屏并筛选全部关联项目。下方提供六个精选项目、详情弹窗、技术领域、三段工作经历、两项可展开的科研成果与真实邮箱联系入口。
 
-已选用你提供的真实经历与邮箱 **wansuizi@163.com**。没有推测姓名、单位、GitHub 或未提供的成果。项目图片是本次原创的系统示意，页面有明确标注；可以随时替换为真实实机照片或截图。支持 standalone 与 Sites 静态托管，发布状态以 Sites 部署记录为准。
+已选用你提供的真实经历与邮箱 **wansuizi@163.com**。没有推测姓名、单位、GitHub 或未提供的成果。项目采用简洁的文字卡片，已撤下全部生成示意图；没有真实素材时不渲染图片、轮播或空白占位。支持 standalone 与 Sites 静态托管，发布状态以 Sites 部署记录为准。
 
 ## 开源基础
 
@@ -76,7 +76,7 @@ components/portfolio/
   About.tsx / Timeline.tsx / Contact.tsx / Footer.tsx
 components/ProjectModal.tsx   原生 dialog 项目详情与焦点约束
 lib/projectFilter.ts          泡泡跳转、筛选同步和浏览器前进 / 后退
-public/art/                   本地星云、六个原创系统示意与备用降级图
+public/art/                   本地星云与备用 3D 降级图
 scripts/                      内容关联检查与 standalone 资源准备
 Dockerfile / next.config.ts   原有部署方式与安全头
 ```
@@ -88,7 +88,9 @@ Dockerfile / next.config.ts   原有部署方式与安全头
 - `profile.ts`：填 `name`（真实姓名或公开昵称）；`headline` 是两段首屏标题，第二段用衬线强调；`role`、`introduction`、`about`、`focusAreas`、`skillGroups` 和 `principles` 可按真实情况调整。`research` 当前仅选两篇，完整英文题名在页面点击展开。
 - `experience.ts`：当前只展示你提供的三段任职，单位 `organization` 留空且不显示。每项支持时间、类型、角色、简介、贡献和真实相关链接。类型支持 `work`、`education`、`opensource`、`milestone`。
 - `socials.ts`：邮箱已配置。`links`、`resume` 留空时不显示按钮；有真实 GitHub 时再填写。简历 PDF 可放到 `public/resume.pdf` 并配置 `/resume.pdf`。邮箱支持邮件客户端与复制反馈，没有联系表单。
-- `projects.ts`：每个对象包括名称、价值说明、职责、技术栈、2–3 个亮点、详情、封面和可选 GitHub / Demo。增删数组项即可更新页面，建议 3–6 项。使用实际截图时把文件放入 `public/`，填写 `cover.src`、描述性 `alt`，将 `cover.kind` 改为 `screenshot`；`screenshots` 支持详情图集。未配置的外部链接不会渲染。
+- `projects.ts`：每个对象包括名称、价值说明、职责、技术栈、2–3 个亮点、详情和可选 GitHub / Demo。增删数组项即可更新页面，建议 3–6 项。`cover` 和 `screenshots` 均为可选：没有真实素材就省略，不会留下图片区域。日后加入真实截图时，把文件放入 `public/`，填写 `cover.src`、描述性 `alt`，将 `cover.kind` 设为 `screenshot`；`screenshots` 可配置详情图集。未配置的外部链接不会渲染。
+
+G1 遥操作详情保留一条 `relatedDemos`：宇树官方仓库提供的 [G1 + Dex3-1 演示](https://www.youtube.com/watch?v=OTWHXTu09wE)，来源为 [unitreerobotics/xr_teleoperate](https://github.com/unitreerobotics/xr_teleoperate)。页面明确将其列为“上游方案演示”，仅作为相关开源技术参考，不代表本人的实机项目录像。使用外部文本链接，不自动加载播放器、封面或第三方视频资源。每条参考需配置 `label`、`href` 和 `source`。
 
 当前精选：G1 全身遥操作与具身学习、语音驱动的电梯按钮操作、力觉临场感遥操作、声表面波水下微机器人、VLA 训练框架、无线肌电采集。已保留离线映射误差的验证条件，区分单臂训练闭环与后续双臂部署方案，没有扩写未经提供的成功率或公司信息。
 

@@ -45,11 +45,15 @@ export default function ProjectModal({
   }, []);
   const screenshots = project.screenshots?.length
     ? project.screenshots
-    : [project.cover];
+    : project.cover
+      ? [project.cover]
+      : [];
+  const relatedDemos =
+    project.relatedDemos?.filter((demo) => externalHref(demo.href)) || [];
   return (
     <dialog
       ref={ref}
-      className="project-dialog"
+      className={`project-dialog ${screenshots.length ? "" : "project-dialog-text"}`}
       aria-labelledby="project-dialog-title"
       onKeyDown={keepFocusInDialog}
       onCancel={(event) => {
@@ -70,11 +74,13 @@ export default function ProjectModal({
         >
           <Icon name="close" />
         </button>
-        <Carousel
-          media={screenshots.map((item) => item.src)}
-          altTexts={screenshots.map((item) => item.alt)}
-          projectNum={project.category}
-        />
+        {screenshots.length > 0 && (
+          <Carousel
+            media={screenshots.map((item) => item.src)}
+            altTexts={screenshots.map((item) => item.alt)}
+            projectNum={project.category}
+          />
+        )}
         <div className="dialog-body">
           <p className="eyebrow">
             {project.category}
@@ -104,6 +110,29 @@ export default function ProjectModal({
               <li key={highlight}>{highlight}</li>
             ))}
           </ul>
+          {relatedDemos.length > 0 && (
+            <aside className="related-demos" aria-label="上游方案演示">
+              <h3>上游方案演示</h3>
+              {relatedDemos.map((demo) => (
+                <a
+                  key={demo.href}
+                  href={externalHref(demo.href)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className="demo-play" aria-hidden="true">
+                    <Icon name="play" width="15" height="15" />
+                  </span>
+                  <span>
+                    <strong>{demo.label}</strong>
+                    <small>{demo.source} · 官方开源技术演示</small>
+                  </span>
+                  <Icon name="external" width="15" height="15" />
+                  <span className="sr-only">（在新标签页打开）</span>
+                </a>
+              ))}
+            </aside>
+          )}
           <div className="dialog-links">
             {externalHref(project.github) && (
               <a

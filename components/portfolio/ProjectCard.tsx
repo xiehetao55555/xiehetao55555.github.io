@@ -18,7 +18,7 @@ export default function ProjectCard({
   return (
     <article
       ref={ref}
-      className={`project-card project-card-${project.size} project-accent-${project.accent}`}
+      className={`project-card project-card-${project.size} project-accent-${project.accent} ${project.cover ? "" : "project-card-text"}`}
       onPointerMove={(event) => {
         if (event.pointerType !== "mouse") return;
         const element = ref.current;
@@ -35,32 +35,34 @@ export default function ProjectCard({
       }}
     >
       <div className="project-spotlight" aria-hidden="true" />
-      <button
-        type="button"
-        className="project-cover-button"
-        onClick={onOpen}
-        aria-label={`查看${project.name}的详情`}
-      >
-        <div className="project-cover">
-          <Image
-            src={project.cover.src}
-            alt={project.cover.alt}
-            fill
-            sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 700px"
-            className="project-cover-image"
-          />
-          <span className="cover-label">
-            {project.isPlaceholder
-              ? "TODO / PLACEHOLDER"
-              : project.cover.kind === "illustration"
-                ? "SYSTEM ILLUSTRATION / 系统示意"
-                : project.category}
-          </span>
-          <span className="cover-open">
-            <Icon name="external" />
-          </span>
-        </div>
-      </button>
+      {project.cover && (
+        <button
+          type="button"
+          className="project-cover-button"
+          onClick={onOpen}
+          aria-label={`查看${project.name}的详情`}
+        >
+          <div className="project-cover">
+            <Image
+              src={project.cover.src}
+              alt={project.cover.alt}
+              fill
+              sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 700px"
+              className="project-cover-image"
+            />
+            <span className="cover-label">
+              {project.isPlaceholder
+                ? "TODO / PLACEHOLDER"
+                : project.cover.kind === "illustration"
+                  ? "SYSTEM ILLUSTRATION / 系统示意"
+                  : project.category}
+            </span>
+            <span className="cover-open">
+              <Icon name="external" />
+            </span>
+          </div>
+        </button>
+      )}
       <div className="project-content">
         <div className="project-category">
           <span>{project.category}</span>

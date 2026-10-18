@@ -1,11 +1,18 @@
 import type { Project } from "./types";
 
 // Six selected projects from the owner's supplied work and research.
-// Covers are original system illustrations, not photographs or screenshots.
-// Public repositories and demos have not been supplied, so their links stay empty.
+// Media is optional. Leave it absent until real project material is available.
+// Personal repository/demo links stay empty; upstream references are attributed.
 export const projects: Project[] = [
   {
     id: "g1-teleoperation",
+    relatedDemos: [
+      {
+        label: "xr_teleoperate · G1 + Dex3-1",
+        href: "https://www.youtube.com/watch?v=OTWHXTu09wE",
+        source: "Unitree Robotics",
+      },
+    ],
     isPlaceholder: false,
     name: "G1 全身遥操作与具身学习",
     category: "TELEOPERATION / EMBODIED AI",
@@ -19,11 +26,6 @@ export const projects: Project[] = [
     ],
     details:
       "围绕宇树 G1 迭代多种遥操作链路，覆盖 PICO 手部追踪、PNS / Xsens 动捕与 Manus 手套，完成动作重定向、身高校准、双 RH56DFX 灵巧手控制及 D435 视频反馈。基于 SONIC、ψ0 与 GR00T N1.7 贯通具身学习流程；开发 Qt6 控制台，连接采集校验、LeRobot 数据转换和模型微调，并完成 RTX 4090—Jetson Orin NX 分布式部署。全身具身学习链路整理了 64 条、4.34 万帧示范数据，完成瓶子抓取放置真机验证；PNS 后退样本脚部映射误差 P95 的改进结果来自离线验证。",
-    cover: {
-      src: "/art/robot-teleoperation.svg",
-      alt: "G1 全身与双灵巧手遥操作链路的原创系统示意，非实机照片",
-      kind: "illustration",
-    },
     screenshots: [],
     github: "",
     demo: "",
@@ -57,11 +59,6 @@ export const projects: Project[] = [
     ],
     details:
       "基于 Unitree G1 构建语音驱动的按钮操作系统，整合 SenseVoice、Qwen 多模态理解、RealSense RGB-D 定位与逆运动学轨迹规划，实现从中文指令到机械臂按压、复位的完整流程。搭建双机协同架构与 250 Hz 关节控制链路，完成坐标标定、运动安全约束和异常恢复，并进行按钮按压真机验证与连续 10 轮语音任务执行测试。",
-    cover: {
-      src: "/art/robot-voice.svg",
-      alt: "语音、视觉定位与机器人按钮操作流程的原创示意，非实机照片",
-      kind: "illustration",
-    },
     github: "",
     demo: "",
     year: "2026",
@@ -83,11 +80,6 @@ export const projects: Project[] = [
     ],
     details:
       "基于临场感的手术机器人遥操作控制方法研究。通过 ROS 话题实现 KUKA iiwa14 的状态感知与运动控制，通过 SDK 控制 Sigma7 主手；使用 C++、CMake 与 Qt 构建上位机。围绕等效阻抗方法分析系统透明性、跟踪性和阻抗传递率，优化主从感知传递，并构建笛卡尔阻抗控制器，实现末端阻抗、恒力输出与零空间响应。",
-    cover: {
-      src: "/art/robot-haptics.svg",
-      alt: "Sigma7 主手与 KUKA 从端之间力反馈和阻抗控制的原创示意，非实机照片",
-      kind: "illustration",
-    },
     github: "",
     demo: "",
     year: "2025—2026",
@@ -109,11 +101,6 @@ export const projects: Project[] = [
     ],
     details:
       "毕业课题围绕水下声表面波机器人的设计与学习控制展开，使用 SolidWorks 进行结构设计，涉及压电驱动、微型电路和阻抗匹配。通过标注、训练 YOLOv8 并结合双目视觉获得三维位置反馈，为非标机器人搭建 MuJoCo 环境；使用 PPO 控制五个动力源，结合混合专家模型与 LSTM 处理控制策略和 Sim2Real 差异。",
-    cover: {
-      src: "/art/robot-microrobot.svg",
-      alt: "声表面波水下微机器人、视觉反馈与学习控制的原创系统示意，非实机照片",
-      kind: "illustration",
-    },
     github: "",
     demo: "",
     year: "2024—2026",
@@ -135,11 +122,6 @@ export const projects: Project[] = [
     ],
     details:
       "面向自研高自由度轮式双臂灵巧手机器人，复现并分析 RLinf 中的 GR00T / PI0.5 训练流程，梳理 Isaac Lab 与 MuJoCo 等环境差异。围绕机器人 URDF 设计 observation、action、reward 和 success check 接口，跑通单臂最小训练闭环；设计 Quest3S 采集、LeRobot / HDF5 数据筛选及 SFT / PPO 流程，并规划通过 IK / WBC / MoveIt2 对接 R007 实时控制，形成后续双臂真机部署的工程方案。",
-    cover: {
-      src: "/art/robot-vla.svg",
-      alt: "仿真、示教数据、VLA 策略与机器人控制的原创流程示意，非系统截图",
-      kind: "illustration",
-    },
     github: "",
     demo: "",
     year: "2026",
@@ -169,11 +151,6 @@ export const projects: Project[] = [
     ],
     details:
       "基于开源硬件方案二次开发，以 ESP32-S3 实现 8 通道、250 SPS 肌电采集与 BLE 传输。使用 Qt6 开发实时波形、数字滤波、数据存储及手势识别上位机，并设计用于蓝牙连接与数据监测的移动端 APP，构建软硬件一体化系统。",
-    cover: {
-      src: "/art/robot-emg.svg",
-      alt: "八通道肌电采集、无线传输与波形处理的原创系统示意，非产品照片",
-      kind: "illustration",
-    },
     github: "",
     demo: "",
     year: "2025—2026",

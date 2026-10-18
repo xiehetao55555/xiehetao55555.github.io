@@ -113,9 +113,11 @@ for (const project of projects) {
     errors.push(`${project.id}: duplicate keyword association`);
   if (project.isPlaceholder)
     pending.push(`${project.id}: replace placeholder project`);
-  if (!project.cover.alt?.trim())
-    errors.push(`${project.id}: cover needs descriptive alt text`);
-  await asset(project.cover.src, `${project.id}.cover`);
+  if (project.cover) {
+    if (!project.cover.alt?.trim())
+      errors.push(`${project.id}: cover needs descriptive alt text`);
+    await asset(project.cover.src, `${project.id}.cover`);
+  }
   for (const image of project.screenshots || []) {
     await asset(image.src, `${project.id}.screenshot`);
     if (!image.alt?.trim())
@@ -123,6 +125,13 @@ for (const project of projects) {
   }
   link(project.github, `${project.id}.github`);
   link(project.demo, `${project.id}.demo`);
+  for (const demo of project.relatedDemos || []) {
+    link(demo.href, `${project.id}.relatedDemo`);
+    if (!demo.href || !demo.label?.trim() || !demo.source?.trim())
+      errors.push(
+        `${project.id}: related demonstration needs a URL, title and source`,
+      );
+  }
   if (!project.stack.length)
     pending.push(`${project.id}: add verified technologies`);
   if (project.highlights.length < 2 || project.highlights.length > 3)

@@ -30,8 +30,9 @@ export type Project = {
   stack: string[];
   highlights: string[];
   details: string;
-  cover: { src: string; alt: string; kind?: "illustration" | "screenshot" };
+  cover?: { src: string; alt: string; kind?: "illustration" | "screenshot" };
   screenshots?: { src: string; alt: string }[];
+  relatedDemos?: { label: string; href: string; source: string }[];
   github?: string;
   demo?: string;
   year?: string;
